@@ -1,0 +1,143 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <div class="container my-5">
+    <div class="row">
+        <div class="col-4 mx-auto">
+            <form method="post" action="" enctype="multipart/form-data">{% csrf_token %}
+                <div class="mb-3">
+                    <input type="text" name="operation_name" class="form-control" id="exampleInputEmail1"
+                           placeholder="اسم العمليه">
+                </div>
+                <div class="mb-3">
+                    <select class="form-select" aria-label="Default select example" name="operation_status">
+                        <option>ايداع</option>
+                        <option>سحب</option>
+                    </select>
+                </div>
+                <div class="mb-3">
+                    <input type="number" placeholder="المبلغ" class="form-control" name="operation_amount">
+                </div>
+                <div class="mb-3">
+                    <input type="file" name="operation_doucment">
+                </div>
+                <div class="mb-3">
+                    <input type="submit" class="btn btn-primary" value="اضافة عمليه ">
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+        <!--        <div class="col-md-6 mx-auto">-->
+        <!--            <h2>طلب صرف</h2>-->
+        <!--            <table class="table table-striped">-->
+        <!--                <thead>-->
+        <!--                <tr>-->
+        <!--                    <th scope="col">#</th>-->
+        <!--                    <th scope="col"> اسم العمليه</th>-->
+        <!--                    <th scope="col">نوع العمليه</th>-->
+        <!--                    <th scope="col">المبلغ</th>-->
+        <!--                    <th scope="col">مسح</th>-->
+        <!--                </tr>-->
+        <!--                </thead>-->
+        <!--                <tbody>-->
+
+        <!--                {% for operation in profile.operations_requests %}-->
+        <!--                <tr>-->
+        <!--                    <th scope="row">{{forloop.counter}}</th>-->
+        <!--                    <td>{{operation.operation_name}}</td>-->
+        <!--                    <td>{{operation.operation_status}}</td>-->
+        <!--                    <td>{{operation.operation_amount}}</td>-->
+        <!--                    <td>-->
+        <!--                        <form method="post" action="{% url 'acc:delete_operation' %}">-->
+        <!--                            {% csrf_token %}-->
+        <!--                        <input type="hidden" name="id" value="{{operation.id}}">-->
+        <!--                            <input type="submit" value="مسح">-->
+        <!--                        </form>-->
+        <!--                    </td>-->
+        <!--                </tr>-->
+        <!--        {% endfor %}-->
+
+
+        <!--                </tbody>-->
+        <!--            </table>-->
+        <!--        </div>-->
+
+
+        <div class="col-md-12 mx-auto">
+            <h2>عمليات خزينة موقع {{site}}</h2>
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col"> اسم العمليه</th>
+                    <th scope="col">نوع العمليه</th>
+                    <th scope="col">المبلغ</th>
+                    <th scope="col">الوثيقه</th>
+                    <th scope="col">مسح</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for operation in operations %}
+                <tr>
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{operation.operation_name}}</td>
+                    <td>{{operation.operation_status}}</td>
+                    <td>{{operation.operation_amount}}</td>
+                    <td>
+
+                        <!-- Button trigger modal -->
+                        <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                data-bs-target="#exampleModal">
+                            عرض
+                        </button>
+
+                        <!-- Modal -->
+                        <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                             aria-hidden="true">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title" id="exampleModalLabel">الوثيقه</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                aria-label="Close"></button>
+                                    </div>
+                                    <div class="modal-body">
+                                        {% if operation.operation_document %}
+                                        <img style="width:100%;" src="{{operation.operation_document.url}}" alt="document">
+                                        {% endif %}
+                                    </div>
+                                    <div class="modal-footer">
+                                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">اغلاق
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </td>
+                    <td>
+                        <form method="post" action="{% url 'acc:delete_operation' %}">
+                            {% csrf_token %}
+                            <input type="hidden" value="{{operation.id}}" name="id">
+                            <input type="hidden" value="{{site}}" name="site_name">
+                            <button type="submit" class="btn btn-outline-danger ">مسح</button>
+                        </form>
+                    </td>
+
+                </tr>
+                {% endfor %}
+                <tr>
+                    <td colspan="3" class="align-center">اجمالى الخزنه</td>
+                    <td colspan="2" class="mx-auto">{{site.safety_total_amount}}</td>
+                </tr>
+                </tbody>
+            </table>
+
+        </div>
+    </div>
+</div>
+{% endblock content %}

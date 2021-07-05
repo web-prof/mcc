@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{% if prof.job == 'رئيس مجلس ادراه' %}
+<div class="container">
+    <div class="row">
+        <div class="col-md-6">
+            <div style="min-height:300px;" id="piechart"></div>
+        </div>
+        <div class="col-md-6">
+            <div style="min-height:300px;" id="myChart" ></div>
+        </div>
+    </div>
+</div>
+{% endif %}
+<div class="container my-5">
+    <div class="row">
+        <div class="col-md-6 mx-auto">
+
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col"> اسم الموقع</th>
+                    <th scope="col">اجمالى الخزينه</th>
+                    <th scope="col">فحص</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for site in sites %}
+                <tr class="table-active">
+                    <th scope="row">{{forloop.counter}}</th>
+                    <td>{{ site.name }}</td>
+                    <td>{{ site.safety_total_amount }}</td>
+                    <td><a class="btn btn-outline-secondary" href="{% url 'acc:managing_site_details' site.name %}">فحص</a></td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+    </div>
+</div>
+{% endblock content %}
+{% block js %}
+<script type="text/javascript">
+// Load google charts
+google.charts.load('current', {'packages':['corechart']});
+google.charts.setOnLoadCallback(drawChart);
+google.charts.setOnLoadCallback(drawBarChart);
+
+// Draw the chart and set the chart values
+function drawChart() {
+  var data = google.visualization.arrayToDataTable([
+  ['Task', 'Hours per Day'],
+  {% for site in sites %}
+  ['{{site.name}}', {{site.safety_total_amount}}],
+{% endfor %}
+]);
+
+  // Optional; add a title and set the width and height of the chart
+  var options = {'title':'خزائن المواقع',is3D: true};
+
+  // Display the chart inside the <div> element with id="piechart"
+  var chart = new google.visualization.PieChart(document.getElementById('piechart'));
+  chart.draw(data, options);
+}
+
+
+
+
+ /////////////////////////////// the bar chart
+ function drawBarChart() {
+// Set Data
+var data = google.visualization.arrayToDataTable([
+  ['الموقع', 'اجمالى الخزينه'],
+  {% for site in sites %}
+
+  ['{{site.name}}', {{site.safety_total_amount}}],
+
+  {% endfor %}
+  ]);
+// Set Options
+var options = {
+  title: 'اجمالى خزنة المواقع',
+  hAxis: {title: 'الموقع'},
+  vAxis: {title: 'اجمالى الخزينه'},
+  legend: 'none'
+};
+// Draw Chart
+var chart = new google.visualization.LineChart(document.getElementById('myChart'));
+chart.draw(data, options);
+}
+
+
+var resizeEvent = window.document.createEvent('UIEvents');
+resizeEvent.initUIEvent('resize', true, false, window, 0);
+window.dispatchEvent(resizeEvent);
+
+
+</script>
+<script>
+
+window.onresize =  drawChart;
+window.onresize =  drawBarChart;
+
+</script>
+
+{% endblock js %}

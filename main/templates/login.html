@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<div class="container"><div class="row"><div class="col-6 mx-auto">
+
+
+<form method="post" action="" class="mx-5 my-5">{% csrf_token %}
+  <div class="mb-3">
+    <input placeholder="اسم المستخدم" name="username" type="text" class="form-control" id="exampleInputEmail1">
+  </div>
+  <div class="mb-3">
+    <input placeholder="الرقم السري" name="password" type="password" class="form-control" id="exampleInputPassword1">
+  </div>
+  <button type="submit" class="btn btn-primary">تسجيل الدخول</button>
+</form>
+
+
+</div></div></div>
+{% endblock content %}
